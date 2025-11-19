@@ -141,21 +141,36 @@ function RecommendationCard({ recommendation }: { recommendation: { type: string
 }
 
 function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric[]) {
-  const avgEnergy = symptomLogs.length > 0
-    ? symptomLogs.reduce((sum, log) => sum + log.energyLevel, 0) / symptomLogs.length
-    : 0;
+  const avgEnergy =
+    symptomLogs.length > 0
+      ? symptomLogs.reduce((sum, log) => sum + log.energyLevel, 0) / symptomLogs.length
+      : 0;
 
-  const avgSleep = symptomLogs.length > 0
-    ? symptomLogs.reduce((sum, log) => sum + log.sleepHours, 0) / symptomLogs.length
-    : 0;
+  const avgSleep =
+    symptomLogs.length > 0
+      ? symptomLogs.reduce((sum, log) => sum + log.sleepHours, 0) / symptomLogs.length
+      : 0;
 
-  const recentEnergy = symptomLogs.slice(0, 2).reduce((sum, log) => sum + log.energyLevel, 0) / Math.min(2, symptomLogs.length) || 0;
-  const olderEnergy = symptomLogs.slice(2, 4).reduce((sum, log) => sum + log.energyLevel, 0) / Math.min(2, symptomLogs.slice(2).length) || recentEnergy;
+  const recentEnergy =
+    symptomLogs.slice(0, 2).reduce((sum, log) => sum + log.energyLevel, 0) /
+      Math.min(2, symptomLogs.length) || 0;
 
-  const energyTrend: 'up' | 'down' | 'stable' =
-    recentEnergy > olderEnergy + 0.5 ? 'up' :
-    recentEnergy < olderEnergy - 0.5 ? 'down' : 'stable';
+  const olderEnergy =
+    symptomLogs.slice(2, 4).reduce((sum, log) => sum + log.energyLevel, 0) /
+      Math.min(2, symptomLogs.slice(2).length) || recentEnergy;
 
+  // Helper to get trend safely
+  function getTrend(value: number, low: number, high: number): 'up' | 'down' | 'stable' {
+    if (value > high) return 'up';
+    if (value < low) return 'down';
+    return 'stable';
+  }
+
+  const energyTrendValue: 'up' | 'down' | 'stable' = getTrend(recentEnergy - olderEnergy, -0.5, 0.5);
+  const sleepTrendValue: 'up' | 'down' | 'stable' = getTrend(avgSleep, 6, 7);
+  const symptomFrequencyTrend: 'up' | 'down' | 'stable' = 'stable';
+
+  // Top symptoms
   const symptomCounts: Record<string, number> = {};
   symptomLogs.forEach(log => {
     log.symptoms.forEach(symptom => {
@@ -168,6 +183,7 @@ function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric
     .slice(0, 5)
     .map(([symptom, count]) => ({ symptom, count }));
 
+  // Mood distribution
   const moodCounts: Record<string, number> = {};
   symptomLogs.forEach(log => {
     moodCounts[log.mood] = (moodCounts[log.mood] || 0) + 1;
@@ -180,19 +196,22 @@ function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric
     }))
     .sort((a, b) => b.percentage - a.percentage);
 
+  // Recommendations
   const recommendations = [];
 
   if (avgSleep < 7) {
     recommendations.push({
       type: 'warning',
       title: 'Improve Sleep Duration',
-      description: 'Your average sleep is below 7 hours. Aim for 7-9 hours of quality sleep to improve hormone balance and reduce PCOS symptoms.'
+      description:
+        'Your average sleep is below 7 hours. Aim for 7-9 hours of quality sleep to improve hormone balance and reduce PCOS symptoms.'
     });
   } else {
     recommendations.push({
       type: 'success',
       title: 'Great Sleep Habits!',
-      description: 'You\'re maintaining good sleep duration. Keep up this healthy habit for optimal hormone regulation.'
+      description:
+        "You're maintaining good sleep duration. Keep up this healthy habit for optimal hormone regulation."
     });
   }
 
@@ -200,7 +219,8 @@ function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric
     recommendations.push({
       type: 'warning',
       title: 'Address Low Energy Levels',
-      description: 'Consider increasing physical activity, staying hydrated, and reviewing your nutrition. Low energy could indicate insulin resistance.'
+      description:
+        'Consider increasing physical activity, staying hydrated, and reviewing your nutrition. Low energy could indicate insulin resistance.'
     });
   }
 
@@ -209,7 +229,8 @@ function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric
     recommendations.push({
       type: 'info',
       title: 'Increase Physical Activity',
-      description: 'Aim for 150 minutes of moderate exercise per week. Regular movement helps improve insulin sensitivity and manage PCOS symptoms.'
+      description:
+        'Aim for 150 minutes of moderate exercise per week. Regular movement helps improve insulin sensitivity and manage PCOS symptoms.'
     });
   }
 
@@ -217,24 +238,35 @@ function generateInsights(symptomLogs: SymptomLog[], healthMetrics: HealthMetric
     recommendations.push({
       type: 'info',
       title: `Monitor ${topSymptoms[0].symptom}`,
-      description: 'This is your most frequent symptom. Consider discussing management strategies with your healthcare provider.'
+      description:
+        'This is your most frequent symptom. Consider discussing management strategies with your healthcare provider.'
     });
   }
 
   return {
     energyTrend: {
       value: avgEnergy.toFixed(1),
-      trend: energyTrend,
-      description: energyTrend === 'up' ? 'Improving over time' : energyTrend === 'down' ? 'Needs attention' : 'Maintaining steady'
+      trend: energyTrendValue,
+      description:
+        energyTrendValue === 'up'
+          ? 'Improving over time'
+          : energyTrendValue === 'down'
+          ? 'Needs attention'
+          : 'Maintaining steady'
     },
     sleepTrend: {
       value: `${avgSleep.toFixed(1)}h`,
-      trend: avgSleep >= 7 ? 'up' : avgSleep >= 6 ? 'stable' : 'down',
-      description: avgSleep >= 7 ? 'Meeting recommendations' : 'Below optimal range'
+      trend: sleepTrendValue,
+      description:
+        sleepTrendValue === 'up'
+          ? 'Meeting recommendations'
+          : sleepTrendValue === 'stable'
+          ? 'Below optimal range'
+          : 'Below optimal range'
     },
     symptomFrequency: {
       value: topSymptoms.length > 0 ? topSymptoms[0].count.toString() : '0',
-      trend: 'stable' as const,
+      trend: symptomFrequencyTrend,
       description: 'Most common symptom count'
     },
     topSymptoms: topSymptoms.length > 0 ? topSymptoms : [{ symptom: 'No symptoms logged', count: 0 }],
