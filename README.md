@@ -55,7 +55,9 @@ Promoting reproductive health for young women
 6. Open your browser and go to http://localhost:5173 (default Vite port).
 
 ## 🌐 Live Demo
-You can view the live demo of the app here: 
+You can view the live demo of the app here:
+
+[**Final Project — PCOS Connect (Live Demo)**](https://finalproject-f9i6l6a2l-elizabeths-projects-04752da5.vercel.app)
 
 ## 📁 Project Structure
 ```php
@@ -89,4 +91,5 @@ Viewing Insights
 - Email: elizabethwaithereru@gmail.com
 
 ## 🙏 Acknowledgments
-Based on Vite + React starter templates
+- Based on Vite + React starter templates
+- [Vercel](https://vercel.com/) for easy and free deployment of the live demo
