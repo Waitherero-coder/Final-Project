@@ -61,6 +61,10 @@ You can view the live demo of the app here:
 
 [**Final Project — PCOS Connect (Live Demo)**](https://finalproject-f9i6l6a2l-elizabeths-projects-04752da5.vercel.app)
 
+Link to Presentation slide:
+
+(https://www.canva.com/design/DAG5MB1nKUE/gTFgeWyBdQObrnn42O0VFQ/view)
+
 ## 📁 Project Structure
 ```php
 Final Project/
