@@ -1,6 +1,8 @@
 # 🌸 PCOS Connect
 PCOS Connect is a simple digital support tool for women living with Polycystic Ovary Syndrome (PCOS).
+
 It aims to promote health awareness, lifestyle management, and access to helpful information.
+
 A React + TypeScript + Vite app to track symptoms, health metrics, and generate personalized insights. Built to help with self-monitoring and health reflection.
 
 ## SDG Alignment:
