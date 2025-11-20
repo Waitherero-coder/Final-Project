@@ -63,7 +63,7 @@ You can view the live demo of the app here:
 
 Link to Presentation slide:
 
-(https://www.canva.com/design/DAG5MB1nKUE/gTFgeWyBdQObrnn42O0VFQ/view)
+([https://www.canva.com/design/DAG5MB1nKUE/gTFgeWyBdQObrnn42O0VFQ/view](https://www.canva.com/design/DAG5MB1nKUE/gTFgeWyBdQObrnn42O0VFQ/view?utm_content=DAG5MB1nKUE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h93933c9c61))
 
 ## 📁 Project Structure
 ```php
